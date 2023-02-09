@@ -11,3 +11,4 @@ Slurm Federation is a relatively new feature, and its implementation and use can
 
 ## Add scheduler node network security group (NSG) rules and setup virtual network peering
 To setup SLURM federation we need to enable slurmdbd communications between on-prem and cloud clusters. New NSG rules and vnet peering need to be added to enable the commnucation. 
+![Figure_1](./figures/1.png)
