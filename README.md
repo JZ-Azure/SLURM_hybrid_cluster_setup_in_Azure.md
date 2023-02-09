@@ -14,18 +14,18 @@ To setup SLURM federation we need to enable slurmdbd communications between on-p
 
 First go to the scheduler node which hosts the slurmdbd and add inbound/outbound rules. This needs to be done from both on-prem and cloud scheduler nodes.
 
-![Figure_1](./figures/1.png)
-![Figure_2](./figures/2.png)
-![Figure_3](./figures/3.png)
-![Figure_4](./figures/4.png)
-![Figure_5](./figures/5.png)
-![Figure_6](./figures/6.png)
+![Figure_1](./figures/1.png){width=50%}
+![Figure_2](./figures/2.png){width=50%}
+![Figure_3](./figures/3.png){width=50%}
+![Figure_4](./figures/4.png){width=50%}
+![Figure_5](./figures/5.png){width=50%}
+![Figure_6](./figures/6.png){width=50%}
 
 Then add vnet peering from either the on-prem or the cloud end. The other end will be created automatically. 
 
-![Figure_7](./figures/6.png)
-![Figure_8](./figures/6.png)
-![Figure_9](./figures/6.png)
+![Figure_7](./figures/6.png){width=50%}
+![Figure_8](./figures/6.png){width=50%}
+![Figure_9](./figures/6.png){width=50%}
 
 ## Sync the munge key
 Copy the on-prem munge key from `/etc/munge/munge.key`
@@ -92,9 +92,9 @@ Change the following setting in the cloud cluster.
 ```bash
 AccountingStorageHost=ON_PREM_SLURMDBD_HOST_IP
 ```
-Note: Nothing needs to be changed in the on-prem `/etc/slurm/slurm.conf` file.
+Note: `AccountingStorageHost` does NOT need to be changed in the on-prem `/etc/slurm/slurm.conf` file.
 
-Add the following line to the bottom of `/etc/slurm/slurm.conf` for federation clusters display (optinal). 
+Add the following line to the bottom of on-prem `/etc/slurm/slurm.conf` file for federation clusters display (optinal). 
 ```bash
 FederationParameters=fed_display
 ```
@@ -126,4 +126,30 @@ Feb 09 21:18:02 scheduler systemd[1]: Started Slurm DBD accounting daemon.
 ```
 Note: The change may take a few minutes to become effective
 
-## Verify the clusters and create the federation 
+## Verify the clusters and create the federation from the cloud cluster
+```bash
+[root@scheduler ~]# lsid
+Slurm 20.11.9, Nov 1 2020
+Copyright SchedMD LLC, 2010-2017.
+
+My cluster name is cloud
+My master name is scheduler
+[root@scheduler ~]# sacctmgr show cluster format=cluster,controlhost,controlport
+   Cluster     ControlHost  ControlPort
+---------- --------------- ------------
+     cloud     10.107.0.22         6817
+   on-prem     10.115.0.20         6817
+```
+Create the federation
+```bash
+sacctmgr add federation cloudburst clusters=on-prem,cloud
+```
+Verify the federation
+```bash
+[root@scheduler ~]# sacctmgr list federation
+Federation    Cluster ID             Features     FedState
+---------- ---------- -- -------------------- ------------
+cloudburst      cloud  2                            ACTIVE
+cloudburst    on-prem  1                            ACTIVE
+```
+
