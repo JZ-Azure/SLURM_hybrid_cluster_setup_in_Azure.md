@@ -100,6 +100,7 @@ FederationParameters=fed_display
 ```
 Restart slurm controller and slurmdbd on both on-prem and cloud clusters. 
 ```
+[root@scheduler ~]# systemctl restart slurmctld.service; systemctl restart slurmdbd.service
 [root@scheduler ~]# systemctl status slurmctld.service; systemctl status slurmdbd.service
 ● slurmctld.service - Slurm controller daemon
    Loaded: loaded (/usr/lib/systemd/system/slurmctld.service; enabled; vendor preset: disabled)
