@@ -153,4 +153,53 @@ Federation    Cluster ID             Features     FedState
 cloudburst      cloud  2                            ACTIVE
 cloudburst    on-prem  1                            ACTIVE
 ```
+```bash
+[root@scheduler ~]# sinfo
+PARTITION  CLUSTER  AVAIL  TIMELIMIT  NODES  STATE NODELIST
+execute*   cloud       up   infinite      1 alloc# execute-pg0-2
+execute*   on-prem     up   infinite      3  idle# execute-pg0-[1-3]
+execute*   cloud       up   infinite    511  idle~ execute-pg0-[1,3-100],execute-pg1-[1-100],execute-pg2-[1-100],execute-pg3-[1-100],execute-pg4-[1-100],execute-pg5-[1-12]
+execute*   on-prem     up   infinite    509  idle~ execute-pg0-[4-100],execute-pg1-[1-100],execute-pg2-[1-100],execute-pg3-[1-100],execute-pg4-[1-100],execute-pg5-[1-12]
+hb120v2    on-prem     up   infinite     24  idle~ hb120v2-pg0-[1-24]
+hb120v2    cloud       up   infinite     24  idle~ hb120v2-pg0-[1-24]
+hb120v3    on-prem     up   infinite     24  idle~ hb120v3-pg0-[1-24]
+hb120v3    cloud       up   infinite     24  idle~ hb120v3-pg0-[1-24]
+hb60rs     on-prem     up   infinite     24  idle~ hb60rs-pg0-[1-24]
+hb60rs     cloud       up   infinite     24  idle~ hb60rs-pg0-[1-24]
+hbv3u18    on-prem     up   infinite     24  idle~ hbv3u18-pg0-[1-24]
+hbv3u18    cloud       up   infinite     24  idle~ hbv3u18-pg0-[1-24]
+hc44rs     on-prem     up   infinite     24  idle~ hc44rs-pg0-[1-24]
+hc44rs     cloud       up   infinite     24  idle~ hc44rs-pg0-[1-24]
+largeviz3d on-prem     up   infinite      2  idle~ largeviz3d-[1-2]
+largeviz3d cloud       up   infinite      2  idle~ largeviz3d-[1-2]
+nc24v3     on-prem     up   infinite      4  idle~ nc24v3-pg0-[1-4]
+nc24v3     cloud       up   infinite      4  idle~ nc24v3-pg0-[1-4]
+viz        on-prem     up   infinite     12  idle~ viz-[1-12]
+ndamsv4    cloud       up   infinite      1  idle~ ndamsv4-1
+viz3d      on-prem     up   infinite      4  idle~ viz3d-[1-4]
+viz        cloud       up   infinite      8  idle~ viz-[1-8]
+viz3d      cloud       up   infinite      4  idle~ viz3d-[1-4]
+```
+Submit test jobs from the on-prem cluster
+```bash
+[root@scheduler ~]# cat submit.sh 
+#!/bin/bash
+#SBATCH -N 1
+#SBATCH --output=job.%J.out
+#SBATCH --error=job.%J.err
 
+hostname
+sleep 120
+[root@scheduler ~]# sbatch -M cloud submit.sh 
+Submitted batch job 134217753 on cluster cloud
+[root@scheduler ~]# sbatch -M on-prem submit.sh
+Submitted batch job 67108878 on cluster on-prem
+[root@scheduler ~]# sbatch  submit.sh
+Submitted batch job 67108879
+[root@scheduler ~]# squeue 
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+         134217753   execute submit.s     root CF       0:18      1 execute-pg0-3
+          67108879   execute submit.s     root CF       0:05      1 execute-pg0-4
+          67108878   execute submit.s     root CF       0:12      1 execute-pg0-1
+[root@scheduler ~]#
+```
