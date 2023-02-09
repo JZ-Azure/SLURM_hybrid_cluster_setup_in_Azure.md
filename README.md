@@ -14,13 +14,12 @@ To setup SLURM federation we need to enable slurmdbd communications between on-p
 
 First go to the scheduler node which hosts the slurmdbd and add inbound/outbound rules. This needs to be done from both on-prem and cloud scheduler nodes.
 
-<img src="./figures/1.png" alt="Figure_1" width="600"/>
-![Figure_1](./figures/1.png){width=50%}
-![Figure_2](./figures/2.png){width=50%}
-![Figure_3](./figures/3.png){width=50%}
-![Figure_4](./figures/4.png){width=50%}
-![Figure_5](./figures/5.png){width=50%}
-![Figure_6](./figures/6.png){width=50%}
+<img src="./figures/1.png" alt="Figure_1" width="500"/>
+<img src="./figures/2.png" alt="Figure_2" width="500"/>
+<img src="./figures/3.png" alt="Figure_3" width="500"/>
+<img src="./figures/4.png" alt="Figure_4" width="500"/>
+<img src="./figures/5.png" alt="Figure_5" width="500"/>
+<img src="./figures/6.png" alt="Figure_6" width="500"/>
 
 Then add vnet peering from either the on-prem or the cloud end. The other end will be created automatically. 
 
