@@ -13,6 +13,7 @@ Slurm Federation is a relatively new feature, and its implementation and use can
 To setup SLURM federation we need to enable slurmdbd communications between on-prem and cloud clusters. New NSG rules and vnet peering need to be added to enable the commnucation. 
 
 First go to the scheduler node which hosts the slurmdbd and add inbound/outbound rules. This needs to be done from both on-prem and cloud scheduler nodes.
+
 ![Figure_1](./figures/1.png)
 ![Figure_2](./figures/2.png)
 ![Figure_3](./figures/3.png)
@@ -21,6 +22,7 @@ First go to the scheduler node which hosts the slurmdbd and add inbound/outbound
 ![Figure_6](./figures/6.png)
 
 Then add vnet peering from either the on-prem or the cloud end. The other end will be created automatically. 
+
 ![Figure_7](./figures/6.png)
 ![Figure_8](./figures/6.png)
 ![Figure_9](./figures/6.png)
@@ -86,8 +88,42 @@ Feb 09 21:11:22 scheduler systemd[1]: Started Slurm controller daemon.
 
 ## Point the cloud cluster to use on-prem slurmdbd
 The slurmdbd host IP is configured in the `/etc/slurm/slurm.conf` file.
+Change the following setting in the cloud cluster.
+```bash
+AccountingStorageHost=ON_PREM_SLURMDBD_HOST_IP
+```
+Note: Nothing needs to be changed in the on-prem `/etc/slurm/slurm.conf` file.
 
+Add the following line to the bottom of `/etc/slurm/slurm.conf` for federation clusters display (optinal). 
+```bash
+FederationParameters=fed_display
+```
+Restart slurm controller and slurmdbd on both on-prem and cloud clusters. 
+```
+[root@scheduler ~]# systemctl status slurmctld.service; systemctl status slurmdbd.service
+● slurmctld.service - Slurm controller daemon
+   Loaded: loaded (/usr/lib/systemd/system/slurmctld.service; enabled; vendor preset: disabled)
+   Active: active (running) since Thu 2023-02-09 21:18:02 UTC; 15s ago
+ Main PID: 17549 (slurmctld)
+    Tasks: 15
+   Memory: 3.6M
+   CGroup: /system.slice/slurmctld.service
+           └─17549 /usr/sbin/slurmctld -D
 
+Feb 09 21:18:02 scheduler systemd[1]: Started Slurm controller daemon.
+● slurmdbd.service - Slurm DBD accounting daemon
+   Loaded: loaded (/usr/lib/systemd/system/slurmdbd.service; enabled; vendor preset: disabled) 
+   Active: active (running) since Thu 2023-02-09 21:18:02 UTC; 15s ago
+ Main PID: 17560 (slurmdbd)
+    Tasks: 1
+   Memory: 948.0K
+   CGroup: /system.slice/slurmdbd.service
+           └─17560 /usr/sbin/slurmdbd -D
 
+Feb 09 21:18:02 scheduler systemd[1]: Stopping Slurm DBD accounting daemon...
+Feb 09 21:18:02 scheduler systemd[1]: Stopped Slurm DBD accounting daemon.
+Feb 09 21:18:02 scheduler systemd[1]: Started Slurm DBD accounting daemon.
+```
+Note: The change may take a few minutes to become effective
 
-
+## Verify the clusters and create the federation 
