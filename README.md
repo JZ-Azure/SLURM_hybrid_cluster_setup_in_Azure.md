@@ -23,9 +23,9 @@ First go to the scheduler node which hosts the slurmdbd and add inbound/outbound
 
 Then add vnet peering from either the on-prem or the cloud end. The other end will be created automatically. 
 
-![Figure_7](./figures/6.png){width=50%}
-![Figure_8](./figures/6.png){width=50%}
-![Figure_9](./figures/6.png){width=50%}
+<img src="./figures/7.png" alt="Figure_7" width="500"/>
+<img src="./figures/8.png" alt="Figure_8" width="500"/>
+<img src="./figures/9.png" alt="Figure_9" width="500"/>
 
 ## Sync the munge key
 Copy the on-prem munge key from `/etc/munge/munge.key`
